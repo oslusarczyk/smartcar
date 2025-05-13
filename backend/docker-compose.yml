@@ -1,0 +1,41 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    ports:
+      - '5432:5432'
+    networks:
+      - pg-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pg-admin2
+    env_file:
+      - .env
+    ports:
+      - '5050:80'
+    networks:
+      - pg-network
+
+  node-app:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    command: npm run start:dev
+    ports:
+      - '8000:3000'
+    networks:
+      - pg-network
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
+networks:
+  pg-network:
+
+volumes:
+  pg-data:
