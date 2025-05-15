@@ -15,7 +15,7 @@ COPY tsconfig.json ./
 COPY webpack-hmr.config.js ./ 
 COPY src ./src
 
-# RUN npx prisma generate
+RUN npx prisma generate
 
 RUN npm run build
 CMD ["npm", "run", "start:dev"]

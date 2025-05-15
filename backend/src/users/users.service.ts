@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { LoginUserDto } from './dto/user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -21,5 +21,19 @@ export class UsersService {
     //   throw new UnauthorizedException('Niepoprawne dane logowania');
     // }
     return user;
+  }
+
+  async register(loginUserDto: LoginUserDto): Promise<any> {
+    const { email, password } = loginUserDto;
+    console.log('email', email);
+    // console.log('password', password);
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    // const user = await this.prisma.user.create({
+    //   data: {
+    //     email: email,
+    //     password: hashedPassword,
+    //   },
+    // });
+    // return user;
   }
 }
