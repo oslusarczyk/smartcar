@@ -13,5 +13,5 @@ export const registerUser = async (payload: {
   email: string;
   password: string;
 }) => {
-  return api.post('/auth/registesr', payload);
+  return api.post('/auth/register', payload);
 };

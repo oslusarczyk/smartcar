@@ -7,7 +7,8 @@ import { useAuth } from '../auth/AuthContext';
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useAuth();
-  const { isAuthenticated, isAdmin } = useAuth();
+  // const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `block flex gap-2  px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -38,7 +39,7 @@ export default function Navigation() {
       {isAuthenticated && (
         <NavLink
           to="/auth"
-          className={linkClass}
+          className={`${linkClass} bg-red-600 text-white hover:bg-red-400`}
           onClick={() => {
             setIsOpen(false);
             logout();

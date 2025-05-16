@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { registerUser } from '../api/authApi';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 type formValues = {
   email: string;
@@ -49,10 +50,11 @@ export default function Auth() {
     mutationFn: (payload: { email: string; password: string }) =>
       registerUser(payload),
     onSuccess: () => {
+      toast.success('Zarejestrowano pomyślnie!');
       setFormMode('login');
     },
     onError: (error: any) => {
-      console.error('Rejestracja nie powiodła się', error);
+      toast.error(error.response.data.message);
     },
   });
 
