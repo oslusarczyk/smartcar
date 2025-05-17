@@ -20,21 +20,7 @@ export default function Navigation() {
   const navLinks = (
     <>
       <NavLink to="/" className={linkClass} onClick={() => setIsOpen(false)}>
-        Home
-      </NavLink>
-      <NavLink
-        to="/about"
-        className={linkClass}
-        onClick={() => setIsOpen(false)}
-      >
-        About
-      </NavLink>
-      <NavLink
-        to="/contact"
-        className={linkClass}
-        onClick={() => setIsOpen(false)}
-      >
-        Contact
+        Strona główna
       </NavLink>
       {isAuthenticated && (
         <NavLink

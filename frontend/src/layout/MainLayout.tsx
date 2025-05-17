@@ -3,9 +3,9 @@ import Navigation from '../components/Navigation';
 
 export default function MainLayout() {
   return (
-    <div>
+    <div className="flex min-h-screen flex-col">
       <Navigation />
-      <main className="p-4">
+      <main className="flex flex-1 items-center justify-center p-4">
         <Outlet />
       </main>
     </div>

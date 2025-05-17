@@ -1,0 +1,88 @@
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String  @id @default(uuid()) @db.Uuid
+  email                String  @unique
+  password         String
+  has_admin_privileges Boolean @default(false)
+reservations Reservation[]
+
+
+  @@map("users")
+}
+model Brand {
+  brand_id   String @id @default(uuid()) @db.Uuid
+  brand_name String
+  cars       Car[]
+
+  @@map("brands")
+}
+
+model Car {
+    car_id          String @id @default(uuid()) @db.Uuid
+    brand_id        String @db.Uuid
+    model           String
+    price_per_day   Int
+    seats_available Int
+    photo           String
+    production_year Int
+    car_description String
+
+    brand          Brand           @relation(fields: [brand_id], references: [brand_id], onUpdate: Cascade, onDelete: Cascade)
+    cars_locations CarsLocations[]
+    reservations   Reservation[]
+
+    @@map("cars")
+}
+
+model CarsLocations {
+  id          String @id @default(uuid()) @db.Uuid
+  car_id      String @db.Uuid
+  location_id String @db.Uuid
+
+  car      Car      @relation(fields: [car_id], references: [car_id], onUpdate: Cascade, onDelete: Cascade)
+  location Location @relation(fields: [location_id], references: [location_id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@map("cars_locations")
+}
+
+model Location {
+    location_id   String @id @default(uuid()) @db.Uuid
+    location_name String
+
+    cars_locations CarsLocations[]
+    reservations   Reservation[]
+
+    @@map("locations")
+}
+enum ReservationStatus {
+    pending
+    cancelled
+    confirmed
+}
+
+model Reservation {
+    reservation_id         String           @id @default(uuid()) @db.Uuid
+    user_id                String            @db.Uuid
+    car_id                 String            @db.Uuid
+    location_id            String            @db.Uuid
+    reservation_start_date DateTime
+    reservation_end_date   DateTime
+    reservation_price      Int?
+    reservation_status     ReservationStatus @default(pending)
+
+
+    user     User     @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+    car      Car      @relation(fields: [car_id], references: [car_id], onUpdate: Cascade, onDelete: Cascade)
+    location Location @relation(fields: [location_id], references: [location_id], onUpdate: Cascade, onDelete: Cascade)
+
+    @@map("reservations")
+}

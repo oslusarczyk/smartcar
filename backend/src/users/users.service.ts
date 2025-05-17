@@ -13,7 +13,7 @@ export class UsersService {
 
   async login(loginUserDto: LoginUserDto): Promise<any> {
     const { email, password } = loginUserDto;
-    const user = await this.prisma.users.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email: email },
     });
     if (!user) {
@@ -28,15 +28,15 @@ export class UsersService {
 
   async register(loginUserDto: LoginUserDto): Promise<any> {
     const { email, password } = loginUserDto;
-    const existingUser = await this.prisma.users.findUnique({
+    const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
 
     if (existingUser) {
-      throw new ConflictException('Podany adres e-mail jest już zajęty');
+      throw new ConflictException('Podany adres e-mail jest już zajęty.');
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.prisma.users.create({
+    const user = await this.prisma.user.create({
       data: {
         email: email,
         password: hashedPassword,
