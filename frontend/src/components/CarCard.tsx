@@ -1,9 +1,9 @@
-import React from 'react';
 import { getLocationText, getSeatsText } from '../utils/functions';
 import type { Car } from '../utils/types';
 import carImage from '../assets/car.jpg';
+import { MapPin, UserRound } from 'lucide-react';
 
-const CarCard: React.FC<{ car: Car }> = ({ car }) => {
+function CarCard({ car }: { car: Car }) {
   const carName = `${car.brand} ${car.model}`;
   return (
     <div
@@ -15,21 +15,25 @@ const CarCard: React.FC<{ car: Car }> = ({ car }) => {
       <div className="flex flex-col gap-1 p-4 text-lg md:gap-2">
         <h3 className="text-center text-2xl font-bold uppercase">{carName}</h3>
         <div className="flex items-center gap-1">
-          <span className="text-lg">📍</span>
+          <span className="text-lg">
+            <MapPin />
+          </span>
           {car.location?.length ?? 0}{' '}
           {getLocationText(car.location?.length ?? 0)}
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-lg">👤</span>
+          <span className="text-lg">
+            <UserRound />
+          </span>
           {car.seats_available} {getSeatsText(car.seats_available)}
         </div>
         <div className="font-semibold">od {car.price_per_day} PLN</div>
         <button className="mt-2 rounded-lg bg-green-600 px-3 py-2 text-[1.3rem] text-white transition hover:bg-green-700">
-          ZOBACZ WIĘCEJ
+          <a href={`/cars/${car.car_id}`}>Zobacz więcej</a>
         </button>
       </div>
     </div>
   );
-};
+}
 
 export default CarCard;

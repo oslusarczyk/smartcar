@@ -1,8 +1,6 @@
 import { useUtils } from '../contexts/UtilsContext';
-// import CarPhoto from '../assets/car_logo.jpg';
 import { useQuery } from '@tanstack/react-query';
 import { getPopularCars } from '../api/carsApi';
-// import { getLocationText, getSeatsText } from '../utils/functions';
 import { useRef } from 'react';
 import CarCard from '../components/CarCard';
 import { useNavigate } from 'react-router-dom';

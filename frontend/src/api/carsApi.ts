@@ -1,4 +1,4 @@
-import type { Car, FilterParams } from '../utils/types';
+import type { Car, CarDetailsProps, FilterParams } from '../utils/types';
 import { api } from './axios';
 
 export const getPopularCars = async () => {
@@ -10,5 +10,10 @@ export const getCars = async (filters: FilterParams) => {
   const res = await api.get<Car[]>('/cars', {
     params: { ...filters },
   });
+  return res.data;
+};
+
+export const getCarDetails = async (id: string) => {
+  const res = await api.get<CarDetailsProps>(`/cars/${id}`);
   return res.data;
 };

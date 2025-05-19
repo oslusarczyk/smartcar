@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CarDto } from './dto/car.dto';
 
@@ -29,5 +29,10 @@ export class CarsController {
   @Get('most-popular')
   async getMostPopularCars() {
     return this.carsService.getMostPopularCars();
+  }
+
+  @Get(':id')
+  async getCarById(@Param('id') id: string): Promise<CarDto> {
+    return this.carsService.getCarById(id);
   }
 }

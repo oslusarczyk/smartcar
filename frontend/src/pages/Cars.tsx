@@ -7,6 +7,9 @@ import Pagination from '../components/Pagination';
 import SearchForm from '../components/SearchForm';
 import { Loader2 } from 'lucide-react'; // lub inny spinner
 
+function areFiltersEqual(a: FilterParams, b: FilterParams) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 export default function Cars() {
   const [filters, setFilters] = useState<FilterParams>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,15 +31,15 @@ export default function Cars() {
     (currentPage - 1) * carsPerPage,
     currentPage * carsPerPage,
   );
-
+  const handleFilterChange = (newFilters: FilterParams) => {
+    if (!areFiltersEqual(newFilters, filters)) {
+      setFilters(newFilters);
+      setCurrentPage(1);
+    }
+  };
   return (
     <div className="p-6">
-      <SearchForm
-        onFilterChange={(f) => {
-          setFilters(f);
-          setCurrentPage(currentPage);
-        }}
-      />
+      <SearchForm onFilterChange={handleFilterChange} />
       <h2 className="mt-6 mb-4 text-center text-2xl font-bold">
         DOSTĘPNE SAMOCHODY
       </h2>

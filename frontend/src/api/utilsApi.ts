@@ -10,3 +10,8 @@ export const getLocations = async () => {
   const res = await api.get<Location[]>('/locations');
   return res.data;
 };
+
+export const getLocationsByCar = async (id: string) => {
+  const res = await api.get<Location[]>(`/locations/${id}`);
+  return res.data;
+};

@@ -1,5 +1,5 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CarDto } from './dto/car.dto';
 
 @Injectable()
@@ -97,5 +97,39 @@ export class CarsService {
         (carLocation) => carLocation.location.location_name,
       ),
     }));
+  }
+
+  async getCarById(id: string): Promise<CarDto> {
+    const car = await this.prisma.car.findUnique({
+      where: { car_id: id },
+      include: {
+        cars_locations: {
+          include: {
+            location: true,
+          },
+        },
+        brand: true,
+      },
+    });
+
+    if (!car) {
+      throw new NotFoundException(`nie znaleziono samochodu z takim ${id}`);
+    }
+
+    const result: CarDto = {
+      car_id: car.car_id,
+      model: car.model,
+      price_per_day: car.price_per_day,
+      seats_available: car.seats_available,
+      photo: car.photo,
+      production_year: car.production_year,
+      car_description: car.car_description,
+      brand: car.brand.brand_name,
+      location: car.cars_locations.map(
+        (carLocation) => carLocation.location.location_name,
+      ),
+    };
+
+    return result;
   }
 }
