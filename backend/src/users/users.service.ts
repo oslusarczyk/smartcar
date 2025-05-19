@@ -17,7 +17,7 @@ export class UsersService {
       where: { email: email },
     });
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('Niepoprawne dane logowania');
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {

@@ -6,3 +6,25 @@ export type formValues = {
   password: string;
   passwordConfirmation?: string;
 };
+
+export interface Car {
+  car_id: number;
+  brand: string;
+  model: string;
+  photo: string;
+  location: string[];
+  seats_available: number;
+  price_per_day: number;
+}
+
+export interface CarDetailsProps {
+  car_id: string;
+  model: string;
+  price_per_day: number;
+  seats_available: number;
+  photo: string;
+  production_year: number;
+  car_description: string;
+  brand: string;
+  location: string;
+}
