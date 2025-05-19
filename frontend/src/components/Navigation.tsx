@@ -22,6 +22,13 @@ export default function Navigation() {
       <NavLink to="/" className={linkClass} onClick={() => setIsOpen(false)}>
         Strona główna
       </NavLink>
+      <NavLink
+        to="/cars"
+        className={linkClass}
+        onClick={() => setIsOpen(false)}
+      >
+        Samochody
+      </NavLink>
       {isAuthenticated && (
         <NavLink
           to="/auth"

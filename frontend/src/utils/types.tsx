@@ -28,3 +28,17 @@ export interface CarDetailsProps {
   brand: string;
   location: string;
 }
+
+export interface FilterParams {
+  location?: string;
+  brand?: string;
+  seats?: string;
+  price_min?: string;
+  price_max?: string;
+}
+
+export interface PaginationProps {
+  totalPages: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
