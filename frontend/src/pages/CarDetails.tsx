@@ -1,22 +1,27 @@
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { getCarDetails } from '../api/carsApi'; // zakładam, że masz taką funkcję
+import { getCarDetails } from '../api/carsApi';
 import { Calendar, Loader2, MapPin, UserRound } from 'lucide-react';
 import carImage from '../assets/car.jpg';
-
-import { getLocationText, getSeatsText } from '../utils/functions';
-import type { CarDetailsProps, Location } from '../utils/types';
+import { getSeatsText } from '../utils/functions';
+import type {
+  CarDetailsProps,
+  Location,
+  ReservationFormData,
+  ReservationPayload,
+} from '../utils/types';
 import { getLocationsByCar } from '../api/utilsApi';
-
-type ReservationFormData = {
-  reservationStartDate: string;
-  reservationEndDate: string;
-  selectedLocation: string;
-};
+import { useAuth } from '../auth/AuthContext';
+import { addReservation } from '../api/reservationApi';
+import toast from 'react-hot-toast';
 
 export default function CarDetails() {
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const navigate = useNavigate();
 
   const {
     data: car,
@@ -31,37 +36,41 @@ export default function CarDetails() {
   const { data: locations } = useQuery<Location[]>({
     queryKey: ['locations', car?.car_id],
     queryFn: () => getLocationsByCar(car!.car_id),
-    enabled: !!car?.car_id, // uruchom dopiero gdy car jest dostępny
+    enabled: !!car?.car_id,
   });
 
-  // React Hook Form
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-    reset,
   } = useForm<ReservationFormData>({
     mode: 'onChange',
   });
 
-  const reservationStartDate = watch('reservationStartDate');
+  const reservationMutation = useMutation({
+    mutationFn: async (payload: ReservationPayload) => {
+      return await addReservation(payload);
+    },
+    onSuccess: () => {
+      toast.success('Rezerwacja została dodana!');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Wystąpił błąd');
+    },
+  });
 
   const onSubmit = async (data: ReservationFormData) => {
-    // Tu logika dodania rezerwacji (np. fetch POST)
-    // Przykład:
-    try {
-      // await addReservation({
-      //   car_id: id!,
-      //   location_id: data.selectedLocation,
-      //   reservation_start_date: data.reservationStartDate,
-      //   reservation_end_date: data.reservationEndDate,
-      // });
-      alert('Rezerwacja zakończona sukcesem!');
-      reset();
-    } catch (err) {
-      alert('Błąd przy rezerwacji');
+    if (!user) {
+      setShowLoginModal(true);
+      return;
     }
+    reservationMutation.mutate({
+      reservation_start_date: data.reservationStartDate,
+      reservation_end_date: data.reservationEndDate,
+      location_id: data.selectedLocation,
+      car_id: car!.car_id,
+      user_id: user.id,
+    });
   };
 
   if (isCarLoading) {
@@ -101,8 +110,10 @@ export default function CarDetails() {
             <span className="text-lg">
               <MapPin />
             </span>
-            {car.location?.length ?? 0}{' '}
-            {getLocationText(car.location?.length ?? 0)}
+            {locations?.length
+              ? locations.map((location) => location.location_name).join(', ') +
+                ' '
+              : null}
           </div>
           <div className="flex items-center gap-1">
             <span className="text-lg">
@@ -127,6 +138,29 @@ export default function CarDetails() {
         <p className="text-gray-800">{car.car_description}</p>
       </div>
 
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-semibold">Zaloguj się</h2>
+            <p className="mb-6">
+              Musisz być zalogowany, aby zarezerwować samochód.
+            </p>
+            <button
+              onClick={() => navigate('/auth')}
+              className="w-full rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+            >
+              Przejdź do logowania
+            </button>
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="mt-4 w-full rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              Anuluj
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mt-10 rounded-xl border p-6 shadow-md">
         <h4 className="mb-4 text-lg font-semibold">Formularz rezerwacji</h4>
 
@@ -143,6 +177,7 @@ export default function CarDetails() {
                 required: 'Pole wymagane',
               })}
               min={new Date().toISOString().split('T')[0]}
+              defaultValue="2025-05-31"
               className="rounded border px-3 py-2"
             />
             {errors.reservationStartDate && (
@@ -159,14 +194,9 @@ export default function CarDetails() {
               id="reservationEndDate"
               {...register('reservationEndDate', {
                 required: 'Pole wymagane',
-                validate: (value) =>
-                  !reservationStartDate ||
-                  value >= reservationStartDate ||
-                  'Data końcowa musi być po dacie początkowej',
               })}
-              min={
-                reservationStartDate || new Date().toISOString().split('T')[0]
-              }
+              defaultValue="2025-06-11"
+              min={new Date().toISOString().split('T')[0]}
               className="rounded border px-3 py-2"
             />
             {errors.reservationEndDate && (
@@ -180,12 +210,15 @@ export default function CarDetails() {
             <label htmlFor="selectedLocation">Miejsce wynajmu:</label>
             <select
               id="selectedLocation"
+              defaultValue="98e1e623-457d-471c-a699-3e2e03dab143"
               {...register('selectedLocation', {
                 required: 'Wybierz lokalizację',
               })}
               className="rounded border px-3 py-2"
             >
-              <option value="">Wybierz lokalizację</option>
+              <option value="98e1e623-457d-471c-a699-3e2e03dab143">
+                Wybierz lokalizację
+              </option>
               {locations?.map(({ location_id, location_name }) => (
                 <option key={location_id} value={location_id}>
                   {location_name}

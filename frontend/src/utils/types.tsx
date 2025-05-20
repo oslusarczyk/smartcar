@@ -42,3 +42,51 @@ export interface PaginationProps {
   currentPage: number;
   onPageChange: (page: number) => void;
 }
+
+export interface Reservation {
+  reservation_id: string;
+  user_id: string;
+  car_id: string;
+  location_id: string;
+  reservation_start_date: string;
+  reservation_end_date: string;
+  reservation_price: number;
+  reservation_status: string;
+  car: {
+    car_id: string;
+    brand_id: string;
+    model: string;
+    price_per_day: number;
+    seats_available: number;
+    photo: string;
+    production_year: number;
+    car_description: string;
+    brand: {
+      brand_id: string;
+      brand_name: string;
+    };
+  };
+  location: {
+    location_id: string;
+    location_name: string;
+  };
+  user: {
+    email: string;
+  };
+}
+
+// Typ danych z formularza
+export type ReservationFormData = {
+  reservationStartDate: string;
+  reservationEndDate: string;
+  selectedLocation: string;
+};
+
+// Typ danych do API
+export type ReservationPayload = {
+  reservation_start_date: string;
+  reservation_end_date: string;
+  location_id: string;
+  car_id: string;
+  user_id: string;
+};

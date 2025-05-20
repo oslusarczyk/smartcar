@@ -13,7 +13,6 @@ export const useLogin = () => {
     },
     onError: (err: any) => {
       toast.error(err.response.data.message);
-      // Handle error (e.g., show a notification)
     },
   });
 };
