@@ -5,7 +5,7 @@ import type { FilterParams } from '../utils/types';
 import CarCard from '../components/CarCard';
 import Pagination from '../components/Pagination';
 import SearchForm from '../components/SearchForm';
-import { Loader2 } from 'lucide-react'; // lub inny spinner
+import { Loader2 } from 'lucide-react';
 
 function areFiltersEqual(a: FilterParams, b: FilterParams) {
   return JSON.stringify(a) === JSON.stringify(b);

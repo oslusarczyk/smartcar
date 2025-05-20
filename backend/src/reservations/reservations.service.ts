@@ -8,9 +8,7 @@ import { ReservationStatus } from '@prisma/client';
 @Injectable()
 export class ReservationsService {
   constructor(private prisma: PrismaService) {}
-  updateReservationStatus(id: string, reservation_status: string) {
-    throw new Error('Method not implemented.');
-  }
+
   async addReservation(
     reservation_start_date: string,
     reservation_end_date: string,
@@ -31,16 +29,6 @@ export class ReservationsService {
           'Data końcowa musi być późniejsza niż początkowa',
         );
       }
-      const car = await this.prisma.car.findUnique({
-        where: { car_id },
-        select: { price_per_day: true },
-      });
-
-      const car_price = car?.price_per_day || 0;
-
-      const DAY_DATE = 1000 * 60 * 60 * 24;
-      const reservation_days =
-        Math.abs(startDate.getTime() - endDate.getTime()) / DAY_DATE;
 
       return await this.prisma.reservation.create({
         data: {
@@ -49,7 +37,6 @@ export class ReservationsService {
           location_id,
           car_id,
           user_id,
-          reservation_price: Math.round(car_price * reservation_days),
         },
       });
     } catch (error) {
@@ -64,10 +51,56 @@ export class ReservationsService {
       throw new InternalServerErrorException('An unexpected error occurred');
     }
   }
-  getPendingReservations() {
-    throw new Error('Method not implemented.');
+
+  async getReservationsByUserId(user_id: string, status: ReservationStatus) {
+    const reservations = this.prisma.reservation.findMany({
+      where: {
+        user_id,
+        reservation_status: status,
+      },
+      include: {
+        car: {
+          include: {
+            brand: true,
+          },
+        },
+        location: true,
+      },
+    });
+
+    return reservations;
   }
-  getReservationsByUserId(user_id: string, status: string) {
-    throw new Error('Method not implemented.');
+
+  async updateReservationStatus(
+    reservation_id: string,
+    action: ReservationStatus,
+  ) {
+    return this.prisma.reservation.update({
+      where: { reservation_id },
+      data: { reservation_status: action },
+    });
+  }
+
+  async getPendingReservations() {
+    const reservations = this.prisma.reservation.findMany({
+      where: {
+        reservation_status: 'pending',
+      },
+      include: {
+        car: {
+          include: {
+            brand: true,
+          },
+        },
+        location: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+
+    return reservations;
   }
 }

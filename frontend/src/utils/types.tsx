@@ -75,14 +75,12 @@ export interface Reservation {
   };
 }
 
-// Typ danych z formularza
 export type ReservationFormData = {
   reservationStartDate: string;
   reservationEndDate: string;
   selectedLocation: string;
 };
 
-// Typ danych do API
 export type ReservationPayload = {
   reservation_start_date: string;
   reservation_end_date: string;
@@ -90,3 +88,11 @@ export type ReservationPayload = {
   car_id: string;
   user_id: string;
 };
+
+export type Status = 'pending' | 'cancelled' | 'confirmed';
+
+export interface User {
+  id: string;
+  email: string;
+  has_admin_privileges: boolean;
+}

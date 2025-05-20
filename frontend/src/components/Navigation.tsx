@@ -31,6 +31,17 @@ export default function Navigation() {
       </NavLink>
       {isAuthenticated && (
         <NavLink
+          to="/history"
+          className={linkClass}
+          onClick={() => {
+            setIsOpen(false);
+          }}
+        >
+          Historia
+        </NavLink>
+      )}
+      {isAuthenticated && (
+        <NavLink
           to="/auth"
           className={`${linkClass} bg-red-600 text-white hover:bg-red-400`}
           onClick={() => {

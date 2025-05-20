@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/axios';
-import type { AuthContextType, User } from './AuthTypes';
+import type { AuthContextType } from './AuthTypes';
+import type { User } from '../utils/types';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 

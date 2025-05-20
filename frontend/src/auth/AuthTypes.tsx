@@ -1,8 +1,4 @@
-export interface User {
-  id: string;
-  email: string;
-  has_admin_privileges: boolean;
-}
+import type { User } from '../utils/types';
 
 export interface AuthContextType {
   user: User | null;

@@ -84,9 +84,17 @@ export default function CarDetails() {
 
   if (carError || !car) {
     return (
-      <p className="text-center text-red-500">
-        {carError?.message || 'Nie znaleziono szczegółów samochodu.'}
-      </p>
+      <>
+        <p className="flex px-5 text-center text-red-500">
+          {carError?.message || 'Nie znaleziono szczegółów samochodu.'}
+        </p>
+        <button
+          onClick={() => navigate(-1)}
+          className="rounded bg-green-600 px-5 py-2 text-white transition hover:bg-green-700"
+        >
+          Wróć
+        </button>
+      </>
     );
   }
 
@@ -177,7 +185,6 @@ export default function CarDetails() {
                 required: 'Pole wymagane',
               })}
               min={new Date().toISOString().split('T')[0]}
-              defaultValue="2025-05-31"
               className="rounded border px-3 py-2"
             />
             {errors.reservationStartDate && (
@@ -195,7 +202,6 @@ export default function CarDetails() {
               {...register('reservationEndDate', {
                 required: 'Pole wymagane',
               })}
-              defaultValue="2025-06-11"
               min={new Date().toISOString().split('T')[0]}
               className="rounded border px-3 py-2"
             />
@@ -210,15 +216,12 @@ export default function CarDetails() {
             <label htmlFor="selectedLocation">Miejsce wynajmu:</label>
             <select
               id="selectedLocation"
-              defaultValue="98e1e623-457d-471c-a699-3e2e03dab143"
               {...register('selectedLocation', {
                 required: 'Wybierz lokalizację',
               })}
               className="rounded border px-3 py-2"
             >
-              <option value="98e1e623-457d-471c-a699-3e2e03dab143">
-                Wybierz lokalizację
-              </option>
+              <option value="">Wybierz lokalizację</option>
               {locations?.map(({ location_id, location_name }) => (
                 <option key={location_id} value={location_id}>
                   {location_name}
