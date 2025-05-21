@@ -8,10 +8,19 @@ import { BrandsModule } from './brands/brands.module';
 import { LocationsModule } from './locations/locations.module';
 import { CarsModule } from './cars/cars.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { AdminGuard } from './auth/guards/admin.guard';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, BrandsModule, LocationsModule, CarsModule, ReservationsModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    BrandsModule,
+    LocationsModule,
+    CarsModule,
+    ReservationsModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AdminGuard],
 })
 export class AppModule {}

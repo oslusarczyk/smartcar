@@ -10,9 +10,7 @@ import {
 export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    console.log('request', request);
     const user = request.user;
-    console.log(user);
     if (!user) {
       throw new UnauthorizedException('Użytkownik nie jest zalogowany.');
     }

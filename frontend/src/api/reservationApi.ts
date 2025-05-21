@@ -15,3 +15,15 @@ export const getReservationsByUserId = async (
   });
   return data;
 };
+
+export const getPendingReservations = async () => {
+  const { data } = await api.get<Reservation[]>('/reservations/pending');
+  return data;
+};
+
+export const updateReservationStatus = async (id: string, status: Status) => {
+  const { data } = await api.put<Reservation>(`/reservations/${id}`, {
+    status,
+  });
+  return data;
+};

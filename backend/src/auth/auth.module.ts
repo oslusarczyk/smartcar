@@ -4,10 +4,14 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { AdminGuard } from './guards/admin.guard';
 
 @Module({
   imports: [
     UsersModule,
+    PassportModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -20,7 +24,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy, AdminGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}

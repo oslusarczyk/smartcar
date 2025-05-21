@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 function areFiltersEqual(a: FilterParams, b: FilterParams) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
+
 export default function Cars() {
   const [filters, setFilters] = useState<FilterParams>({});
   const [currentPage, setCurrentPage] = useState(1);

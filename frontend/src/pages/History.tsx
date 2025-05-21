@@ -46,14 +46,14 @@ export default function History() {
         <h3 className="text-xl font-semibold">
           {res.car.brand.brand_name} {res.car.model}
         </h3>
-        <div className="mt-2 flex items-center gap-2 text-sm text-gray-700">
+        <div className="mt-2 flex items-center gap-2 text-lg text-gray-700">
           <Calendar className="h-4 w-4" />
           <span>
             {formatDate(res.reservation_start_date)} –{' '}
             {formatDate(res.reservation_end_date)}
           </span>
         </div>
-        <div className="mt-1 flex items-center gap-2 text-sm text-gray-700">
+        <div className="mt-1 flex items-center gap-2 text-lg text-gray-700">
           <MapPin className="h-4 w-4" />
           <span>{res.location.location_name}</span>
         </div>

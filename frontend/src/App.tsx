@@ -7,6 +7,9 @@ import CarDetails from './pages/CarDetails';
 import Error from './pages/Error';
 import History from './pages/History';
 import { LoggedRoute } from './pages/protectedRoutes/loggedRoute';
+import { UnloggedRoute } from './pages/protectedRoutes/unloggedRoute';
+import { AdminRoute } from './pages/protectedRoutes/adminRoute';
+import CarAdmin from './pages/CarAdmin';
 
 function App() {
   return (
@@ -15,13 +18,28 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/cars" element={<Cars />} />
         <Route path="/cars/:id" element={<CarDetails />} />
-        <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/auth"
+          element={
+            <UnloggedRoute>
+              <Auth />
+            </UnloggedRoute>
+          }
+        />
         <Route
           path="/history"
           element={
             <LoggedRoute>
               <History />
             </LoggedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <CarAdmin />
+            </AdminRoute>
           }
         />
         <Route path="*" element={<Error />} />

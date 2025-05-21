@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { ReservationStatus } from '@prisma/client';
+import { AdminGuard } from '@/auth/guards/admin.guard';
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth-guard';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -17,6 +28,7 @@ export class ReservationsController {
   }
 
   @Get('pending')
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async getPendingReservations() {
     return this.reservationsService.getPendingReservations();
   }

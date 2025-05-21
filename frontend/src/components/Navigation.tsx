@@ -7,8 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useAuth();
-  // const { isAuthenticated, isAdmin } = useAuth();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `block flex gap-2  px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -40,6 +39,15 @@ export default function Navigation() {
           Historia
         </NavLink>
       )}
+      {isAuthenticated && isAdmin && (
+        <NavLink
+          to="/admin"
+          className={linkClass}
+          onClick={() => setIsOpen(false)}
+        >
+          Admin
+        </NavLink>
+      )}
       {isAuthenticated && (
         <NavLink
           to="/auth"
@@ -62,15 +70,6 @@ export default function Navigation() {
           Logowanie
         </NavLink>
       )}
-      {/* {isAuthenticated && isAdmin && (
-        <NavLink
-          to="/admin"
-          className={linkClass}
-          onClick={() => setIsOpen(false)}
-        >
-          Admin
-        </NavLink>
-      )} */}
     </>
   );
 

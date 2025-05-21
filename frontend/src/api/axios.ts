@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useToastOnce } from '../hooks/useToastOnce';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -14,3 +15,14 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.log('Error in response interceptor:', error);
+    useToastOnce(
+      error.response?.data?.message ||
+        'Wystąpił błąd. Spróbuj ponownie później.',
+    );
+  },
+);
