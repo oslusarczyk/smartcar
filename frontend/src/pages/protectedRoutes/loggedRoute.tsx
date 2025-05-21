@@ -1,11 +1,11 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
-import { useToastOnce } from '../../hooks/useToastOnce';
+import { showToast } from '../../utils/toast';
 
 export const LoggedRoute = ({ children }: { children: React.ReactElement }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
-    useToastOnce(
+    showToast(
       'Nie masz uprawnień administratora do tej strony',
       !isAuthenticated,
     );

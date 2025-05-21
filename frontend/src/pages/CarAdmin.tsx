@@ -7,7 +7,7 @@ import {
   getPendingReservations,
   updateReservationStatus,
 } from '../api/reservationApi';
-import { AtSign, Calendar, MapPin } from 'lucide-react';
+import { AtSign, Calendar, Check, MapPin, X } from 'lucide-react';
 
 export default function CarAdmin() {
   const queryClient = useQueryClient();
@@ -36,10 +36,6 @@ export default function CarAdmin() {
   const handleAction = (reservationId: string, decision: Status) => {
     mutation.mutate({ reservationId, decision });
   };
-
-  //   const carName = `${reservation.car.brand.brand_name} ${reservation.car.model}`;
-  //  {reservation.car.brand.brand_name}{' '}
-  //                     {reservation.car.model}
 
   return (
     <div className="mx-auto max-w-7xl p-6">
@@ -99,7 +95,7 @@ export default function CarAdmin() {
 
                       <div className="mt-2 flex justify-end gap-2">
                         <button
-                          className="rounded-lg border border-red-600 px-3 py-1 text-red-600 transition hover:bg-red-50"
+                          className="flex items-center gap-1 rounded-lg border-black bg-red-600 px-2 py-3 text-white transition hover:bg-red-400"
                           onClick={() =>
                             handleAction(
                               reservation.reservation_id,
@@ -107,10 +103,10 @@ export default function CarAdmin() {
                             )
                           }
                         >
-                          &#10005; Odrzuć
+                          <X /> Odrzuć
                         </button>
                         <button
-                          className="rounded-lg border border-green-600 px-3 py-1 text-green-600 transition hover:bg-green-50"
+                          className="flex items-center gap-1 rounded-lg border bg-green-600 px-2 py-3 text-white transition hover:bg-green-400"
                           onClick={() =>
                             handleAction(
                               reservation.reservation_id,
@@ -118,7 +114,7 @@ export default function CarAdmin() {
                             )
                           }
                         >
-                          &#10004; Potwierdź
+                          <Check /> Potwierdź
                         </button>
                       </div>
                     </div>

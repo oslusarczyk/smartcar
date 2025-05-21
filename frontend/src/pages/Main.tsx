@@ -17,7 +17,7 @@ export default function MainPage() {
   } = useQuery({
     queryKey: ['mostPopularCars'],
     queryFn: () => getPopularCars(),
-    staleTime: 1000 * 5 * 60,
+    staleTime: 1000 * 10 * 60,
   });
 
   function handleClick() {
