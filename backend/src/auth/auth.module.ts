@@ -20,7 +20,7 @@ import { AdminGuard } from './guards/admin.guard';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '15m' },
+        signOptions: { expiresIn: '60m' },
       }),
     }),
   ],

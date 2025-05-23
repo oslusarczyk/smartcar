@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '@/auth/guards/jwt-auth-guard';
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
   @Get()
+  @UseGuards(JwtAuthGuard)
   async getReservationsByUserId(
     @Query('user_id') user_id: string,
     @Query('status') status: ReservationStatus,
