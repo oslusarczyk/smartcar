@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export const api = axios.create({
@@ -14,3 +13,13 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    window.location.href = '/auth';
+    return Promise.reject(error);
+  },
+);

@@ -17,3 +17,10 @@ export const getCarDetails = async (id: string) => {
   const res = await api.get<CarDetailsProps>(`/cars/${id}`);
   return res.data;
 };
+
+export const addCar = async (formData: FormData) => {
+  const res = await api.post<Car>('/cars/upload', {
+    formData,
+  });
+  return res.data;
+};

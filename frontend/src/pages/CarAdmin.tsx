@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// import { useAuth } from '../auth/AuthContext';
 import type { Reservation, Status } from '../utils/types';
 import { formatDate } from '../utils/functions';
 import carImage from '../assets/car.jpg';
@@ -8,9 +7,11 @@ import {
   updateReservationStatus,
 } from '../api/reservationApi';
 import { AtSign, Calendar, Check, MapPin, X } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export default function CarAdmin() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const {
     data: pending = [],
     isLoading,
@@ -45,6 +46,12 @@ export default function CarAdmin() {
         ) : isError ? (
           <h2 className="text-xl font-semibold text-red-600">
             Wystąpił błąd podczas ładowania
+            <button
+              onClick={() => navigate(-1)}
+              className="rounded bg-green-600 px-5 py-2 text-white transition hover:bg-green-700"
+            >
+              Wróć
+            </button>
           </h2>
         ) : pending.length === 0 ? (
           <h2 className="text-xl font-semibold">

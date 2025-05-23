@@ -6,6 +6,7 @@ export interface AuthContextType {
   isAdmin: boolean;
   login: (data: { token: string; user: User }) => void;
   logout: () => void;
+  wasLoggedOut: boolean;
 }
 
 export interface LoginResponse {

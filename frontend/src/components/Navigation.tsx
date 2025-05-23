@@ -6,8 +6,8 @@ import { useAuth } from '../auth/AuthContext';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const { logout } = useAuth();
-  const { isAuthenticated, isAdmin } = useAuth();
+  // const {  } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `block flex gap-2  px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -40,13 +40,22 @@ export default function Navigation() {
         </NavLink>
       )}
       {isAuthenticated && isAdmin && (
-        <NavLink
-          to="/admin"
-          className={linkClass}
-          onClick={() => setIsOpen(false)}
-        >
-          Admin
-        </NavLink>
+        <>
+          <NavLink
+            to="/admin/reservation"
+            className={linkClass}
+            onClick={() => setIsOpen(false)}
+          >
+            Admin
+          </NavLink>
+          <NavLink
+            to="/admin/add"
+            className={linkClass}
+            onClick={() => setIsOpen(false)}
+          >
+            Dodaj
+          </NavLink>
+        </>
       )}
       {isAuthenticated && (
         <NavLink

@@ -4,19 +4,32 @@ import { useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/axios';
 import type { AuthContextType } from './AuthTypes';
 import type { User } from '../utils/types';
+import { showToast } from '../utils/toast';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [wasLoggedOut, setWasLoggedOut] = useState(false);
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem('token');
     const storedUser = sessionStorage.getItem('user');
-
     if (storedToken) {
+      const payload = JSON.parse(atob(storedToken.split('.')[1]));
+      const isExpired = payload.exp * 1000 < Date.now();
+      if (isExpired) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        delete api.defaults.headers.common.Authorization;
+        setUser(null);
+        setWasLoggedOut(true);
+        showToast('Sesja wygasła. Zaloguj się ponownie.');
+        return;
+      }
       api.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
       if (storedUser) {
         setUser(JSON.parse(storedUser));
@@ -29,6 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     sessionStorage.setItem('user', JSON.stringify(user));
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
     setUser(user);
+    setWasLoggedOut(false);
     navigate('/');
   };
 
@@ -37,8 +51,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     sessionStorage.removeItem('user');
     delete api.defaults.headers.common.Authorization;
     setUser(null);
+    setWasLoggedOut(true);
+    navigate('/auth');
     queryClient.clear();
-    navigate('/login');
   };
 
   return (
@@ -49,6 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAdmin: user?.has_admin_privileges ?? false,
         login,
         logout,
+        wasLoggedOut,
       }}
     >
       {children}

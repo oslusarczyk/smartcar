@@ -4,7 +4,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { showToast } from '../../utils/toast';
 
 export const AdminRoute = ({ children }: { children: React.ReactElement }) => {
-  const { isAdmin, user } = useAuth(); // <-- zakładam, że masz `user` w kontekście
+  const { isAdmin, user } = useAuth();
   const [showRedirect, setShowRedirect] = useState(false);
 
   useEffect(() => {
@@ -14,6 +14,6 @@ export const AdminRoute = ({ children }: { children: React.ReactElement }) => {
     }
   }, [isAdmin, user]);
 
-  if (showRedirect) return <Navigate to="/auth" replace />;
+  if (showRedirect) return <Navigate to="/" replace />;
   return children;
 };

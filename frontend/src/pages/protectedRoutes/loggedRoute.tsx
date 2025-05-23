@@ -3,12 +3,9 @@ import { useAuth } from '../../auth/AuthContext';
 import { showToast } from '../../utils/toast';
 
 export const LoggedRoute = ({ children }: { children: React.ReactElement }) => {
-  const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    showToast(
-      'Nie masz uprawnień administratora do tej strony',
-      !isAuthenticated,
-    );
+  const { isAuthenticated, wasLoggedOut } = useAuth();
+  if (!isAuthenticated && !wasLoggedOut) {
+    showToast('Nie jesteś zalogowany.', !isAuthenticated);
     return <Navigate to="/auth" replace />;
   }
 
