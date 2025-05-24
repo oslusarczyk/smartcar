@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -51,13 +52,13 @@ export class CarsController {
   }
 
   @Post('upload')
-  // @UseGuards(JwtAuthGuard, AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @UseInterceptors(
     FileInterceptor('car_photo', {
       storage: diskStorage({
         destination: path.join(__dirname, '../uploads'),
         filename: (req, file, cb) => {
-          const filename = `Math.random() * 1e9`;
+          const filename = `${Math.random().toString(16).slice(2)}${path.extname(file.originalname)}`;
           cb(null, filename);
         },
       }),
@@ -70,8 +71,13 @@ export class CarsController {
       },
     }),
   )
-  addCar(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    // return this.carsService.addCar();
+  addCar(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+    let { locations, ...carDto } = body;
+    try {
+      locations = JSON.parse(locations);
+    } catch (error) {
+      locations = [locations];
+    }
+    return this.carsService.addCar(carDto, locations, file);
   }
 }

@@ -1,16 +1,23 @@
+import { BASE_URL } from '../api/axios';
 import { getLocationText, getSeatsText } from '../utils/functions';
 import type { Car } from '../utils/types';
-import carImage from '../assets/car.jpg';
+// import carImage from '../assets/car.jpg';
 import { MapPin, UserRound } from 'lucide-react';
 
 function CarCard({ car }: { car: Car }) {
+  const IMAGE_PATH = `${BASE_URL}/uploads`;
   const carName = `${car.brand} ${car.model}`;
+
   return (
     <div
       key={car.car_id}
       className="mb-2 flex w-90 flex-col rounded-lg border bg-white shadow-md md:w-80 xl:w-100"
     >
-      <img src={carImage} alt={carName} />
+      <img
+        className="h-60 object-cover"
+        src={`${IMAGE_PATH}/${car.photo}`}
+        alt={carName}
+      />
 
       <div className="flex flex-col gap-1 p-4 text-lg md:gap-2">
         <h3 className="text-center text-2xl font-bold uppercase">{carName}</h3>

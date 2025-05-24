@@ -19,8 +19,11 @@ export const getCarDetails = async (id: string) => {
 };
 
 export const addCar = async (formData: FormData) => {
-  const res = await api.post<Car>('/cars/upload', {
-    formData,
+  console.log(formData);
+  const res = await api.post<Car>('/cars/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   });
   return res.data;
 };

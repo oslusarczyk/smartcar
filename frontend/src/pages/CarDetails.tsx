@@ -16,8 +16,10 @@ import { getLocationsByCar } from '../api/utilsApi';
 import { useAuth } from '../auth/AuthContext';
 import { addReservation } from '../api/reservationApi';
 import toast from 'react-hot-toast';
+import { BASE_URL } from '../api/axios';
 
 export default function CarDetails() {
+  const IMAGE_PATH = `${BASE_URL}/uploads`;
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -105,7 +107,7 @@ export default function CarDetails() {
       <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex-1">
           <img
-            src={carImage}
+            src={`${IMAGE_PATH}/${car.photo}`}
             alt={`${car.brand} ${car.model}`}
             className="w-full rounded-xl shadow-md"
           />

@@ -22,13 +22,12 @@ export default function CarAdmin() {
       reset();
       queryClient.invalidateQueries({ queryKey: ['cars'] });
     },
-    onError: () => {
-      toast.error('Wystąpił błąd przy dodawaniu auta.');
+    onError: (err: any) => {
+      toast.error(err.response.data.message);
     },
   });
 
   const onSubmit = (data: any) => {
-    console.log(data);
     const formData = new FormData();
     formData.append('car_photo', data.carPhoto[0]);
     formData.append('brand_id', data.brand);
@@ -58,6 +57,7 @@ export default function CarAdmin() {
           <input
             id="carPhoto"
             type="file"
+            accept="image/png, image/jpeg"
             {...register('carPhoto', { required: 'Zdjęcie jest wymagane.' })}
             className="hidden"
           />
@@ -74,9 +74,9 @@ export default function CarAdmin() {
             {...register('brand', { required: 'Wybierz markę.' })}
             className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
           >
-            <option value="">-- Wybierz markę --</option>
+            <option value="Opel">-- Wybierz markę --</option>
             {brands.map(({ brand_id, brand_name }) => (
-              <option key={brand_id} value={brand_name}>
+              <option key={brand_id} value={brand_id}>
                 {brand_name}
               </option>
             ))}
@@ -108,7 +108,11 @@ export default function CarAdmin() {
           <label className="mb-2 block font-semibold text-gray-700">Cena</label>
           <input
             type="number"
-            {...register('price', { required: 'Cena jest wymagana.' })}
+            {...register('price', {
+              required: 'Cena jest wymagana.',
+              min: { value: 0, message: 'Minimalna wartość to 0' },
+              max: { value: 1000, message: 'Maksymalna wartość to 1000' },
+            })}
             className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
           />
           {errors.price?.message && (
@@ -124,7 +128,11 @@ export default function CarAdmin() {
           </label>
           <input
             type="number"
-            {...register('productionYear', { required: 'Rok jest wymagany.' })}
+            {...register('productionYear', {
+              required: 'Rok jest wymagany.',
+              min: { value: 2000, message: 'Minimalna wartość to 2000' },
+              max: { value: 2025, message: 'Maksymalna wartość to 2025' },
+            })}
             className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
           />
           {errors.productionYear?.message && (
@@ -172,7 +180,7 @@ export default function CarAdmin() {
               <label key={location_id} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  value={location_name}
+                  value={location_id}
                   {...register('locations')}
                   className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
                 />

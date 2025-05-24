@@ -12,6 +12,7 @@ import { AdminRoute } from './pages/protectedRoutes/adminRoute';
 import AddCar from './pages/addCar';
 
 import { useRoutes, Outlet } from 'react-router-dom';
+import AdminContainer from './pages/adminContainer';
 
 function AdminLayout() {
   return (
@@ -49,6 +50,7 @@ const routes = [
         path: 'admin',
         element: <AdminLayout />,
         children: [
+          { path: '', element: <AdminContainer /> },
           { path: 'reservation', element: <CarAdmin /> },
           { path: 'add', element: <AddCar /> },
         ],

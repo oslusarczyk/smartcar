@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { useLogin } from '../auth/useLogin';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { registerUser } from '../api/authApi';
+import { loginUser, registerUser } from '../api/authApi';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import type { formValues } from '../utils/types';
 import CarPhoto from '../assets/car_logo.jpg';
+import { useAuth } from '../auth/AuthContext';
 
 export default function Auth() {
   const [formMode, setFormMode] = useState<'login' | 'register'>('login');
-  const { mutate: login } = useLogin();
+  const { login } = useAuth();
 
   const loginSchema = Yup.object({
     email: Yup.string().email('Niepoprawny email').required('Wymagany e-mail'),
@@ -35,9 +35,9 @@ export default function Auth() {
     formState: { errors, isSubmitting },
   } = useForm<formValues>({
     defaultValues: {
-      email: 'test@example.com',
+      email: 'test1@example.com',
       password: 'testsad1',
-      passwordConfirmation: 'testsad1', // jeśli rejestracja
+      passwordConfirmation: 'testsad1',
     },
     resolver: yupResolver(validationSchema),
   });
@@ -54,10 +54,22 @@ export default function Auth() {
     },
   });
 
+  const { mutate: mutateLogin } = useMutation({
+    mutationFn: (payload: { email: string; password: string }) =>
+      loginUser(payload),
+    onSuccess: (data) => {
+      toast.success('Zalogowano pomyślnie');
+      login({ token: data.access_token, user: data.user });
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.message);
+    },
+  });
+
   const onSubmit = async (data: formValues) => {
     try {
       if (formMode === 'login') {
-        await login({ email: data.email, password: data.password });
+        mutateLogin({ email: data.email, password: data.password });
       } else {
         mutateRegistration({ email: data.email, password: data.password });
       }

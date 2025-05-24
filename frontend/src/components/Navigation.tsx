@@ -42,18 +42,11 @@ export default function Navigation() {
       {isAuthenticated && isAdmin && (
         <>
           <NavLink
-            to="/admin/reservation"
+            to="/admin"
             className={linkClass}
             onClick={() => setIsOpen(false)}
           >
-            Admin
-          </NavLink>
-          <NavLink
-            to="/admin/add"
-            className={linkClass}
-            onClick={() => setIsOpen(false)}
-          >
-            Dodaj
+            Panel admina
           </NavLink>
         </>
       )}

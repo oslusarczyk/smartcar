@@ -16,6 +16,7 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({
       where: { email: email },
     });
+
     if (!user) {
       throw new UnauthorizedException('Niepoprawne dane logowania');
     }
