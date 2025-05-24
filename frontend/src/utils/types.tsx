@@ -89,7 +89,13 @@ export type ReservationPayload = {
   user_id: string;
 };
 
-export type Status = 'pending' | 'cancelled' | 'confirmed';
+export type ReservationStatus =
+  | 'pending'
+  | 'cancelled'
+  | 'approved'
+  | 'confirmed';
+
+export type PaymentStatus = 'pending' | 'paid' | 'cancelled';
 
 export interface User {
   id: string;

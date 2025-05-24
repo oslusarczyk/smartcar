@@ -9,6 +9,7 @@ import { LocationsModule } from './locations/locations.module';
 import { CarsModule } from './cars/cars.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { AdminGuard } from './auth/guards/admin.guard';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AdminGuard } from './auth/guards/admin.guard';
     LocationsModule,
     CarsModule,
     ReservationsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AdminGuard],

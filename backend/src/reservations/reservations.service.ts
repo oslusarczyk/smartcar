@@ -16,47 +16,58 @@ export class ReservationsService {
     car_id: string,
     user_id: string,
   ) {
-    try {
-      const startDate = new Date(reservation_start_date);
-      const endDate = new Date(reservation_end_date);
+    const startDate = new Date(reservation_start_date);
+    const endDate = new Date(reservation_end_date);
 
-      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        throw new BadRequestException('Zły format daty');
-      }
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new BadRequestException('Zły format daty');
+    }
 
-      if (startDate >= endDate) {
-        throw new BadRequestException(
-          'Data końcowa musi być późniejsza niż początkowa',
-        );
-      }
+    if (startDate >= endDate) {
+      throw new BadRequestException(
+        'Data końcowa musi być późniejsza niż początkowa',
+      );
+    }
 
-      return await this.prisma.reservation.create({
+    const car = await this.prisma.car.findUnique({
+      where: { car_id },
+      select: { price_per_day: true },
+    });
+
+    const car_price = car?.price_per_day || 0;
+
+    const DAY_DATE = 1000 * 60 * 60 * 24;
+    const reservation_days =
+      Math.abs(startDate.getTime() - endDate.getTime()) / DAY_DATE;
+    const reservation_price = Math.round(car_price * reservation_days);
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const reservation = await tx.reservation.create({
         data: {
           reservation_start_date: startDate,
           reservation_end_date: endDate,
           location_id,
           car_id,
           user_id,
+          reservation_price: reservation_price,
         },
       });
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
 
-      if (error.code === 'P0001') {
-        throw new BadRequestException('Invalid data provided to the database');
-      }
+      const payment = await tx.payment.create({
+        data: {
+          reservation_id: reservation.reservation_id,
+          amount: reservation_price,
+        },
+      });
 
-      throw new InternalServerErrorException('An unexpected error occurred');
-    }
+      return { reservation, payment };
+    });
   }
 
-  async getReservationsByUserId(user_id: string, status: ReservationStatus) {
+  async getReservationsByUserId(user_id: string) {
     const reservations = this.prisma.reservation.findMany({
       where: {
         user_id,
-        reservation_status: status,
       },
       include: {
         car: {

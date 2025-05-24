@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Reservation, Status } from '../utils/types';
+import type { Reservation, ReservationStatus } from '../utils/types';
 import { formatDate } from '../utils/functions';
 import carImage from '../assets/car.jpg';
 import {
@@ -27,14 +27,14 @@ export default function CarAdmin() {
       decision,
     }: {
       reservationId: string;
-      decision: Status;
+      decision: ReservationStatus;
     }) => updateReservationStatus(reservationId, decision),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations', 'pending'] });
     },
   });
 
-  const handleAction = (reservationId: string, decision: Status) => {
+  const handleAction = (reservationId: string, decision: ReservationStatus) => {
     mutation.mutate({ reservationId, decision });
   };
 
@@ -106,7 +106,7 @@ export default function CarAdmin() {
                           onClick={() =>
                             handleAction(
                               reservation.reservation_id,
-                              'cancelled' as Status,
+                              'cancelled' as ReservationStatus,
                             )
                           }
                         >
@@ -117,7 +117,7 @@ export default function CarAdmin() {
                           onClick={() =>
                             handleAction(
                               reservation.reservation_id,
-                              'confirmed' as Status,
+                              'approved' as ReservationStatus,
                             )
                           }
                         >

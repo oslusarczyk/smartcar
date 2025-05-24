@@ -4,7 +4,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { getCarDetails } from '../api/carsApi';
 import { Calendar, Loader2, MapPin, UserRound } from 'lucide-react';
-import carImage from '../assets/car.jpg';
 import { getSeatsText } from '../utils/functions';
 import type {
   CarDetailsProps,

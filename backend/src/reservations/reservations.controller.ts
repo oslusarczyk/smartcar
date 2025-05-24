@@ -18,14 +18,11 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getReservationsByUserId(
-    @Query('user_id') user_id: string,
-    @Query('status') status: ReservationStatus,
-  ) {
-    if (!user_id || !status) {
-      throw new Error('Missing user_id or status');
+  async getReservationsByUserId(@Query('user_id') user_id: string) {
+    if (!user_id) {
+      throw new Error('Brak id.');
     }
-    return this.reservationsService.getReservationsByUserId(user_id, status);
+    return this.reservationsService.getReservationsByUserId(user_id);
   }
 
   @Get('pending')
@@ -35,6 +32,7 @@ export class ReservationsController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async addReservation(@Body() body) {
     const {
       reservation_start_date,
