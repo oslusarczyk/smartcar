@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -21,6 +21,7 @@ export default function CarDetails() {
   const IMAGE_PATH = `${BASE_URL}/uploads`;
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
+  const [totalPrice, setTotalPrice] = useState<number | null>(250);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
@@ -44,9 +45,43 @@ export default function CarDetails() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<ReservationFormData>({
     mode: 'onChange',
   });
+
+  const watchStartDate = watch('reservationStartDate');
+  const watchEndDate = watch('reservationEndDate');
+
+  const calculateTotalPrice = (
+    startDate: string,
+    endDate: string,
+    price: number,
+  ): number => {
+    const DAY_DATE = 1000 * 60 * 60 * 24;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (end < start) return 0;
+
+    const reservation_days = Math.ceil(
+      (end.getTime() - start.getTime()) / DAY_DATE,
+    );
+    const reservation_price = Math.round(price * reservation_days);
+    return reservation_price;
+  };
+
+  useEffect(() => {
+    if (watchStartDate && watchEndDate && car?.price_per_day) {
+      const price = calculateTotalPrice(
+        watchStartDate,
+        watchEndDate,
+        car.price_per_day,
+      );
+      setTotalPrice(price);
+    } else {
+      setTotalPrice(null);
+    }
+  }, [watchStartDate, watchEndDate]);
 
   const reservationMutation = useMutation({
     mutationFn: async (payload: ReservationPayload) => {
@@ -54,6 +89,7 @@ export default function CarDetails() {
     },
     onSuccess: () => {
       toast.success('Rezerwacja została dodana!');
+      navigate('/history');
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Wystąpił błąd');
@@ -245,6 +281,15 @@ export default function CarDetails() {
             </button>
           </div>
         </form>
+        {totalPrice !== null && totalPrice > 0 && (
+          <div className="mt-4 text-right text-xl font-semibold md:col-span-3">
+            Łączna cena:{' '}
+            <span className="text-xl font-bold text-green-700">
+              {' '}
+              {totalPrice} PLN
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
