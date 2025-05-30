@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: docker/node/Dockerfile
-    command: npm run start:dev
+    command: npm run start
     ports:
       - '8000:3000'
     networks:
