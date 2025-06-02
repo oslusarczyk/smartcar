@@ -8,7 +8,7 @@ export type formValues = {
 };
 
 export interface Car {
-  car_id: number;
+  car_id: string;
   brand: string;
   model: string;
   photo: string;
@@ -27,6 +27,16 @@ export interface CarDetailsProps {
   car_description: string;
   brand: string;
   location: string;
+}
+
+export interface CarListItem {
+  car_id: string;
+  brand: string;
+  model: string;
+  photo: string;
+  location: string[];
+  seats_available: number;
+  price_per_day: number;
 }
 
 export interface FilterParams {

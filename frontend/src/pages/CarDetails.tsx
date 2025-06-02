@@ -18,6 +18,7 @@ import { BASE_URL } from '../api/axios';
 import LabeledField from '../components/Label';
 import LoginPromptModal from '../components/LoginModal';
 import CarHeaderInfo from '../components/CarHeader';
+import { Loader2 } from 'lucide-react';
 
 export default function CarDetails() {
   const IMAGE_PATH = `${BASE_URL}/uploads`;
@@ -137,7 +138,6 @@ export default function CarDetails() {
     );
   }
 
-  const carName = `${car.brand} ${car.model}`;
   const inputClassNames = 'rounded border px-3 py-2 w-full';
 
   return (
