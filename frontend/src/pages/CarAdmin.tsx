@@ -59,7 +59,9 @@ export default function CarAdmin() {
           </h2>
         ) : (
           <>
-            <h2 className="text-2xl font-bold">Rezerwacje do potwierdzenia</h2>
+            <h2 className="text-center text-2xl font-bold">
+              Rezerwacje do potwierdzenia
+            </h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {pending.map((reservation) => {
                 const carName = `${reservation.car.brand.brand_name} ${reservation.car.model}`;
@@ -68,7 +70,7 @@ export default function CarAdmin() {
                     key={reservation.reservation_id}
                     className="flex overflow-hidden rounded-2xl border shadow-md"
                   >
-                    <div className="w-1/3">
+                    <div className="w-[40%]">
                       <img
                         src={carImage}
                         alt="car"
@@ -100,9 +102,9 @@ export default function CarAdmin() {
                         </p>
                       </div>
 
-                      <div className="mt-2 flex justify-end gap-2">
+                      <div className="mt-2 flex justify-end gap-1 md:gap-2">
                         <button
-                          className="flex items-center gap-1 rounded-lg border-black bg-red-600 px-2 py-3 text-white transition hover:bg-red-400"
+                          className="flex items-center gap-1 rounded-lg border-black bg-red-600 px-1 py-2 text-white transition hover:bg-red-400 md:px-2 md:py-3"
                           onClick={() =>
                             handleAction(
                               reservation.reservation_id,
@@ -113,7 +115,7 @@ export default function CarAdmin() {
                           <X /> Odrzuć
                         </button>
                         <button
-                          className="flex items-center gap-1 rounded-lg border bg-green-600 px-2 py-3 text-white transition hover:bg-green-400"
+                          className="flex items-center gap-1 rounded-lg border bg-green-600 px-1 py-2 text-white transition hover:bg-green-400 md:px-2 md:py-3"
                           onClick={() =>
                             handleAction(
                               reservation.reservation_id,

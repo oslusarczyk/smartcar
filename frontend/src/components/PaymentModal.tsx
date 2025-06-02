@@ -1,4 +1,4 @@
-import type { PaymentStatus } from '../utils/types'; // upewnij się, że masz ten typ gdzieś
+import type { PaymentStatus } from '../utils/types';
 
 interface PaymentModalProps {
   open: boolean;

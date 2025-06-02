@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUtils } from '../contexts/UtilsContext';
 import toast from 'react-hot-toast';
 import { addCar } from '../api/carsApi';
+import LabelField from '../components/Label';
 
 export default function CarAdmin() {
   const queryClient = useQueryClient();
@@ -40,6 +41,13 @@ export default function CarAdmin() {
     mutation.mutate(formData);
   };
 
+  const inputClassNames =
+    'w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none';
+  const selectClassNames =
+    'w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none';
+  const textAreaClassNames =
+    'w-full resize-none rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none';
+
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h2 className="mb-6 text-3xl font-bold text-gray-800">Dodaj auto</h2>
@@ -66,46 +74,29 @@ export default function CarAdmin() {
           )}
         </div>
 
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">
-            Marka
-          </label>
+        <LabelField label="Marka" id="brand" errors={errors.brand as any}>
           <select
             {...register('brand', { required: 'Wybierz markę.' })}
-            className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
+            className={selectClassNames}
           >
-            <option value="Opel">-- Wybierz markę --</option>
+            <option value="">-- Wybierz markę --</option>
             {brands.map(({ brand_id, brand_name }) => (
               <option key={brand_id} value={brand_id}>
                 {brand_name}
               </option>
             ))}
           </select>
-          {errors.brand?.message && (
-            <p className="mt-1 text-sm text-red-600">
-              {String(errors.brand.message)}
-            </p>
-          )}
-        </div>
+        </LabelField>
 
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">
-            Model
-          </label>
+        <LabelField label="Model" id="model" errors={errors.model as any}>
           <input
             type="text"
             {...register('model', { required: 'Model jest wymagany.' })}
-            className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
+            className={inputClassNames}
           />
-          {errors.model?.message && (
-            <p className="mt-1 text-sm text-red-600">
-              {String(errors.model.message)}
-            </p>
-          )}
-        </div>
+        </LabelField>
 
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">Cena</label>
+        <LabelField label="Cena" id="price" errors={errors.price as any}>
           <input
             type="number"
             {...register('price', {
@@ -113,19 +104,15 @@ export default function CarAdmin() {
               min: { value: 0, message: 'Minimalna wartość to 0' },
               max: { value: 1000, message: 'Maksymalna wartość to 1000' },
             })}
-            className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
+            className={inputClassNames}
           />
-          {errors.price?.message && (
-            <p className="mt-1 text-sm text-red-600">
-              {String(errors.price.message)}
-            </p>
-          )}
-        </div>
+        </LabelField>
 
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">
-            Rok produkcji
-          </label>
+        <LabelField
+          label="Rok produkcji"
+          id="productionYear"
+          errors={errors.productionYear as any}
+        >
           <input
             type="number"
             {...register('productionYear', {
@@ -133,67 +120,55 @@ export default function CarAdmin() {
               min: { value: 2000, message: 'Minimalna wartość to 2000' },
               max: { value: 2025, message: 'Maksymalna wartość to 2025' },
             })}
-            className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
+            className={inputClassNames}
           />
-          {errors.productionYear?.message && (
-            <p className="mt-1 text-sm text-red-600">
-              {String(errors.productionYear.message)}
-            </p>
-          )}
-        </div>
+        </LabelField>
 
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">Opis</label>
+        <LabelField
+          label="Opis"
+          id="description"
+          errors={errors.description as any}
+        >
           <textarea
             {...register('description', { required: 'Opis jest wymagany.' })}
             rows={4}
-            className="w-full resize-none rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
+            className={textAreaClassNames}
           />
-          {errors.description?.message && (
-            <p className="mt-1 text-sm text-red-600">
-              {String(errors.description.message)}
-            </p>
-          )}
-        </div>
+        </LabelField>
 
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">
-            Liczba miejsc
-          </label>
-          <select
-            {...register('seats')}
-            className="w-full rounded border border-gray-300 bg-white p-2 text-gray-700 transition focus:border-green-500 focus:ring-2 focus:ring-green-300 focus:outline-none"
-          >
+        <LabelField
+          label="Liczba miejsc"
+          id="seats"
+          errors={errors.seats as any}
+        >
+          <select {...register('seats')} className={selectClassNames}>
             <option value="2">2</option>
             <option value="4">4</option>
             <option value="5">5</option>
             <option value="7">7</option>
           </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block font-semibold text-gray-700">
-            Lokalizacje
-          </label>
+        </LabelField>
+        <LabelField
+          label="Lokalizacje"
+          id="locations" // Użyj 'locations' jako ID dla tego bloku
+          errors={errors.locations as any}
+        >
           <div className="flex flex-wrap gap-4">
             {locations.map(({ location_id, location_name }) => (
               <label key={location_id} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   value={location_id}
-                  {...register('locations')}
+                  {...register('locations', {
+                    required: 'Wybierz co najmniej jedną lokalizację.',
+                  })}
                   className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
                 />
                 <span>{location_name}</span>
               </label>
             ))}
           </div>
-          {errors.locations?.message && (
-            <p className="mt-1 text-sm text-red-600">
-              {String(errors.locations.message)}
-            </p>
-          )}
-        </div>
+        </LabelField>
 
         <button
           type="submit"

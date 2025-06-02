@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import type { formValues } from '../utils/types';
 import CarPhoto from '../assets/car_logo.jpg';
 import { useAuth } from '../auth/AuthContext';
+import LabelField from '../components/Label';
 
 export default function Auth() {
   const [formMode, setFormMode] = useState<'login' | 'register'>('login');
@@ -78,6 +79,8 @@ export default function Auth() {
     }
   };
 
+  const inputClassNames = 'w-full rounded border px-3 py-2 shadow-sm';
+
   return (
     <div className="flex flex-row">
       {/* Zdjęcie */}
@@ -101,47 +104,41 @@ export default function Auth() {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="mb-1 block font-medium">Email</label>
+          <LabelField label="Email" id="email" errors={errors.email as any}>
             <input
               type="email"
               {...register('email')}
-              className="w-full rounded border px-3 py-2 shadow-sm"
+              className={inputClassNames}
               placeholder="email@example.com"
             />
-            {errors.email && (
-              <p className="text-sm text-red-600">{errors.email.message}</p>
-            )}
-          </div>
+          </LabelField>
 
-          <div>
-            <label className="mb-1 block font-medium">Hasło</label>
+          <LabelField
+            label="Hasło"
+            id="password"
+            errors={errors.password as any}
+          >
             <input
               type="password"
               {...register('password')}
-              className="w-full rounded border px-3 py-2 shadow-sm"
+              className={inputClassNames}
               placeholder="••••••••"
             />
-            {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
-            )}
-          </div>
+          </LabelField>
 
           {formMode === 'register' && (
-            <div>
-              <label className="mb-1 block font-medium">Potwierdź hasło</label>
+            <LabelField
+              label="Potwierdź hasło"
+              id="passwordConfirmation"
+              errors={errors.passwordConfirmation as any}
+            >
               <input
                 type="password"
                 {...register('passwordConfirmation')}
-                className="w-full rounded border px-3 py-2 shadow-sm"
+                className={inputClassNames}
                 placeholder="••••••••"
               />
-              {errors.passwordConfirmation && (
-                <p className="text-sm text-red-600">
-                  {errors.passwordConfirmation.message}
-                </p>
-              )}
-            </div>
+            </LabelField>
           )}
 
           <button

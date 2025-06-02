@@ -1,7 +1,6 @@
 import { BASE_URL } from '../api/axios';
 import { getLocationText, getSeatsText } from '../utils/functions';
 import type { Car } from '../utils/types';
-// import carImage from '../assets/car.jpg';
 import { MapPin, UserRound } from 'lucide-react';
 
 function CarCard({ car }: { car: Car }) {
@@ -11,7 +10,7 @@ function CarCard({ car }: { car: Car }) {
   return (
     <div
       key={car.car_id}
-      className="mb-2 flex w-90 flex-col rounded-lg border bg-white shadow-md md:w-80 xl:w-100"
+      className="mx-auto mb-2 flex w-full max-w-sm flex-col rounded-lg border bg-white shadow-md"
     >
       <img
         className="h-60 object-cover"

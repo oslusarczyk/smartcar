@@ -3,8 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { getCarDetails } from '../api/carsApi';
-import { Calendar, Loader2, MapPin, UserRound } from 'lucide-react';
-import { getSeatsText } from '../utils/functions';
+
 import type {
   CarDetailsProps,
   Location,
@@ -16,6 +15,9 @@ import { useAuth } from '../auth/AuthContext';
 import { addReservation } from '../api/reservationApi';
 import toast from 'react-hot-toast';
 import { BASE_URL } from '../api/axios';
+import LabeledField from '../components/Label';
+import LoginPromptModal from '../components/LoginModal';
+import CarHeaderInfo from '../components/CarHeader';
 
 export default function CarDetails() {
   const IMAGE_PATH = `${BASE_URL}/uploads`;
@@ -136,47 +138,11 @@ export default function CarDetails() {
   }
 
   const carName = `${car.brand} ${car.model}`;
+  const inputClassNames = 'rounded border px-3 py-2 w-full';
 
   return (
     <div className="mx-auto max-w-6xl p-6">
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="flex-1">
-          <img
-            src={`${IMAGE_PATH}/${car.photo}`}
-            alt={`${car.brand} ${car.model}`}
-            className="w-full rounded-xl shadow-md"
-          />
-        </div>
-
-        <div className="bg-alpha-50 flex flex-1 flex-col gap-2 rounded-xl p-6 text-2xl shadow-md">
-          <h2 className="text-2xl font-bold">{carName}</h2>
-
-          <div className="flex items-center gap-1">
-            <span className="text-lg">
-              <MapPin />
-            </span>
-            {locations?.length
-              ? locations.map((location) => location.location_name).join(', ') +
-                ' '
-              : null}
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-lg">
-              <UserRound />
-            </span>
-            {car.seats_available} {getSeatsText(car.seats_available)}
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-lg">
-              <Calendar />
-            </span>
-            {car.production_year}
-          </div>
-          <div className="text-4xl font-bold uppercase">
-            od {car.price_per_day} PLN
-          </div>
-        </div>
-      </div>
+      <CarHeaderInfo car={car} locations={locations} imagePath={IMAGE_PATH} />
 
       <div className="mt-8">
         <h3 className="mb-2 text-xl font-semibold">Opis</h3>
@@ -184,26 +150,7 @@ export default function CarDetails() {
       </div>
 
       {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">Zaloguj się</h2>
-            <p className="mb-6">
-              Musisz być zalogowany, aby zarezerwować samochód.
-            </p>
-            <button
-              onClick={() => navigate('/auth')}
-              className="w-full rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-            >
-              Przejdź do logowania
-            </button>
-            <button
-              onClick={() => setShowLoginModal(false)}
-              className="mt-4 w-full rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              Anuluj
-            </button>
-          </div>
-        </div>
+        <LoginPromptModal onClose={() => setShowLoginModal(false)} />
       )}
 
       <div className="mt-10 rounded-xl border p-6 shadow-md">
@@ -213,50 +160,46 @@ export default function CarDetails() {
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 gap-4 md:grid-cols-3"
         >
-          <div className="flex flex-col">
-            <label htmlFor="reservationStartDate">Od:</label>
+          <LabeledField
+            label="Od:"
+            id="reservationStartDate"
+            errors={errors.reservationStartDate as any}
+          >
             <input
               type="date"
-              id="reservationStartDate"
               {...register('reservationStartDate', {
                 required: 'Pole wymagane',
               })}
               min={new Date().toISOString().split('T')[0]}
-              className="rounded border px-3 py-2"
+              className={inputClassNames}
             />
-            {errors.reservationStartDate && (
-              <p className="text-sm text-red-500">
-                {errors.reservationStartDate.message}
-              </p>
-            )}
-          </div>
+          </LabeledField>
 
-          <div className="flex flex-col">
-            <label htmlFor="reservationEndDate">Do:</label>
+          <LabeledField
+            label="Do:"
+            id="reservationEndDate"
+            errors={errors.reservationEndDate as any}
+          >
             <input
               type="date"
-              id="reservationEndDate"
               {...register('reservationEndDate', {
                 required: 'Pole wymagane',
               })}
               min={new Date().toISOString().split('T')[0]}
-              className="rounded border px-3 py-2"
+              className={inputClassNames}
             />
-            {errors.reservationEndDate && (
-              <p className="text-sm text-red-500">
-                {errors.reservationEndDate.message}
-              </p>
-            )}
-          </div>
+          </LabeledField>
 
-          <div className="flex flex-col">
-            <label htmlFor="selectedLocation">Miejsce wynajmu:</label>
+          <LabeledField
+            label="Miejsce wynajmu:"
+            id="selectedLocation"
+            errors={errors.selectedLocation as any}
+          >
             <select
-              id="selectedLocation"
               {...register('selectedLocation', {
                 required: 'Wybierz lokalizację',
               })}
-              className="rounded border px-3 py-2"
+              className={inputClassNames}
             >
               <option value="">Wybierz lokalizację</option>
               {locations?.map(({ location_id, location_name }) => (
@@ -265,12 +208,7 @@ export default function CarDetails() {
                 </option>
               ))}
             </select>
-            {errors.selectedLocation && (
-              <p className="text-sm text-red-500">
-                {errors.selectedLocation.message}
-              </p>
-            )}
-          </div>
+          </LabeledField>
 
           <div className="md:col-span-3">
             <button
