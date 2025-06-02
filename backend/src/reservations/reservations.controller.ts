@@ -32,7 +32,7 @@ export class ReservationsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async addReservation(@Body() body) {
     const {
       reservation_start_date,
@@ -60,6 +60,7 @@ export class ReservationsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async updateReservationStatus(
     @Param('id') id: string,
     @Body('status') reservation_status: ReservationStatus,
