@@ -4,7 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ReservationStatus } from '@prisma/client';
+import { Payment, Reservation, ReservationStatus } from '@prisma/client';
 @Injectable()
 export class ReservationsService {
   constructor(private prisma: PrismaService) {}
@@ -15,7 +15,7 @@ export class ReservationsService {
     location_id: string,
     car_id: string,
     user_id: string,
-  ) {
+  ): Promise<{ reservation: Reservation; payment: Payment }> {
     const startDate = new Date(reservation_start_date);
     const endDate = new Date(reservation_end_date);
 
@@ -62,6 +62,7 @@ export class ReservationsService {
 
       return { reservation, payment };
     });
+    return result;
   }
 
   async getReservationsByUserId(user_id: string) {

@@ -11,7 +11,6 @@ export class PaymentsController {
     @Param('id') id: string,
     @Body('payment_status') payment_status: PaymentStatus,
   ) {
-    console.log(id, payment_status);
     if (!id || !payment_status) {
       throw new Error('Brakuje id lub status');
     }
