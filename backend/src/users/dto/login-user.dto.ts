@@ -3,6 +3,6 @@ export class LoginUserDto {
   @IsEmail()
   email: string;
   @IsString()
-  @MinLength(4, { message: 'Hasło musi mieć więcej niz 8 znaków.' })
+  @MinLength(8, { message: 'Hasło musi mieć więcej niz 8 znaków.' })
   password: string;
 }
